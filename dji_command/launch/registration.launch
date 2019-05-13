@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+
+<launch>
+  <param name="use_sim_time" type="bool" value="true" />
+
+  <arg name="nodelet_manager" default="velodyne_nodelet_manager" />
+  <arg name="calibration" default="$(find velodyne_pointcloud)/params/VLP16db.yaml"/>
+
+  <!--node pkg="rosbag" type="play" name="play" output="screen" args="-s 65 -r 0.5 clock /home/roman/dji/hills.bag">
+    <remap from="velodyne_points" to="loged_velodyne_points"/>
+  </node-->
+
+
+  <node pkg="nodelet" type="nodelet" name="$(arg nodelet_manager)" args="manager" />
+
+
+  <!-- start cloud nodelet -->
+  <include file="$(find dji_command)/launch/cloud_nodelet.launch">
+    <arg name="calibration" value="$(arg calibration)"/>
+    <arg name="manager" value="$(arg nodelet_manager)" />
+
+  </include>
+
+  <!--include file="$(find dji_command)/launch/VLP16_points.launch">
+    <arg name="min_range" value="1.5" />
+    <arg name="view_width" value="3.14"/>
+  </include-->
+
+  <node pkg="geodetic_utils" type="geodetic_to_local_conversion_node" name="geodetic_to_local_conversion_node" output="screen">
+    <remap from="gps" to="/dji_sdk/gps_position"/>
+    <remap from="imu" to="/dji_sdk/imu"/>
+    <remap from="vel" to="/dji_sdk/velocity"/>
+    <!--remap from="external_altitude" to="/dji_sdk/height_above_takeoff"/-->
+    <remap from="odometry" to="/dji_sdk/odometry"/>
+  </node>
+
+  <node pkg="geodetic_utils" type="gimbal_tf_broadcaster_bag.py" name="gimbal_tf_broadcaster" respawn="true">
+  </node>
+
+
+  <node pkg="rviz" type="rviz" name="rviz" output="screen" args="-d $(find dji_command)/rviz/drone_mapping.rviz">
+  </node>
+
+
+  <node pkg="tf" type="static_transform_publisher" name="pylon_camera" args="0 0 0.05 1.5707963 3.14159 1.5707963 velodyne pylon_camera 10"/>
+  <node pkg="dji_command" type="yaml_to_camera_info_publisher.py" name="yaml_to_camera_info_publisher" args="$(find dji_command)/resources/ost.yaml" respawn="true"/>
+  <!-- <node pkg="dji_command" type="lidar_tf_allign.py" name="lidar_tf_allign" respawn="true"/> -->
+
+
+
+
+
+
+  <!-- arguments -->
+
+  <arg name="enable_floor_detection" default="false" />
+  <arg name="enable_gps" default="true" />
+
+  <!-- in case you use velodyne_driver, comment out the following line -->
+
+  <!--node pkg="nodelet" type="nodelet" name="$(arg nodelet_manager)" args="$(arg nodelet_manager)" output="screen"/-->
+
+
+
+
+  <!-- prefiltering_nodelet -->
+  <node pkg="nodelet" type="nodelet" name="prefiltering_nodelet" args="load hdl_graph_slam/PrefilteringNodelet $(arg nodelet_manager)" output="screen">
+    <param name="use_distance_filter" value="false" />
+    <param name="distance_near_thresh" value="1.0" />
+    <param name="distance_far_thresh" value="5000.0" />
+    <!-- NONE, VOXELGRID, or APPROX_VOXELGRID -->
+    <param name="downsample_method" value="NONE" />
+    <param name="downsample_resolution" value="0.05" />
+    <!-- NONE, RADIUS, or STATISTICAL -->
+    <param name="outlier_removal_method" value="RADIUS" />
+    <param name="statistical_mean_k" value="30" />
+    <param name="statistical_stddev" value="1.2" />
+    <param name="radius_radius" value="0.5" />
+    <param name="radius_min_neighbors" value="5" />
+  </node>
+
+  <!-- scan_matching_odometry_nodelet -->
+  <node pkg="nodelet" type="nodelet" name="scan_matching_odometry_nodelet" args="load hdl_graph_slam/ScanMatchingOdometryNodelet $(arg nodelet_manager)" output="screen">
+      <param name="keyframe_delta_trans" value="2.5" />
+      <param name="keyframe_delta_angle" value="1.0" />
+      <param name="keyframe_delta_time" value="5.0" />
+      <param name="transform_thresholding" value="false" />
+      <param name="max_acceptable_trans" value="2.0" />
+      <param name="max_acceptable_angle" value="1.0" />
+      <param name="downsample_method" value="APPROX_VOXELGRID" />
+      <param name="downsample_resolution" value="0.05" />
+      <!-- ICP, GICP, NDT, GICP_OMP, or NDT_OMP(recommended) -->
+      <param name="registration_method" value="NDT_OMP" />
+      <param name="ndt_resolution" value="2.0" />
+      <param name="ndt_num_threads" value="0" />
+      <param name="ndt_nn_search_method" value="DIRECT7" />
+  </node>
+
+  <node pkg="hdl_graph_slam" type="map2odom_publisher.py" name="map2odom_publisher" />
+
+
+
+  <node pkg="tf" type="static_transform_publisher" name="map_world" args="0 0 0.0 0 0 0 map world 10"/>
+
+
+</launch>

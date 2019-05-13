@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<launch>
+  <param name="use_sim_time" type="bool" value="true" />
+
+  <arg name="mav_name" default="inspire1" />
+  <arg name="namespace" default="$(arg mav_name)"/>
+
+  
+
+ 
+  <node pkg="dji_command" type="set_trajectory_node" name="DJIAttitudeControllerNode" respawn="true"></node>
+  
+
+</launch>

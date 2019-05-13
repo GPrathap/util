@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <arg name="mav_name" default="inspire1" />
+  <arg name="namespace" default="$(arg mav_name)"/>    
+
+  <!--include file="$(find dji_sdk)/launch/tracker.launch">  </include-->
+
+  <!--group ns="$(arg namespace)"-->
+  <!--include file="$(find dji_sdk)/launch/sdk_ttyUSB.launch">  </include-->
+
+  <include file="$(find dji_sdk)/launch/manifold_simple.launch">  </include>
+
+  <!--node pkg="dji_command" type="dji_command_node" name="dji_command" respawn="true"  output="screen"/-->
+  <node pkg="dji_command" type="dji_identification_node" name="dji_identification_node" respawn="true"  output="screen"/>
+
+
+  <rosparam command="load" file="$(find dji_car_chasing)/params/pid_params.yaml" />
+  <!--node pkg="dji_car_chasing" type="control_node" name="control_node" respawn="true"  output="screen"/-->
+
+    <!--node name="mav_nonlinear_mpc" pkg="mav_nonlinear_mpc" type="nonlinear_mpc_node" respawn="true" clear_params="true" output="screen">
+      <remap from="odometry" to="dji_sdk/odometry" />
+      <rosparam file="$(find dji_command)/resources/nonlinear_mpc_$(arg mav_name).yaml" />
+      <rosparam file="$(find dji_command)/resources/disturbance_observer_$(arg mav_name).yaml"/>
+      <param name="use_rc_teleop" value="false"/>
+      <param name="verbose" value="true" />
+      <param name="reference_frame" value="world"/>
+    </node-->
+
+  <!--/group-->
+
+    <node name="rosbag" pkg="rosbag" type="record" args="-a -o /home/ubuntu/ag_ros/AG_DJI_"/>
+
+</launch>

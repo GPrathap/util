@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<package>
+  <name>dji_command</name>
+  <version>0.0.0</version>
+  <description>The dji_command package provides implementations for some complex behaviors of the quadrotor.</description>
+  <maintainer email="frontwise@gmail.com">Roman Fedorenko</maintainer>
+
+  <license>BSD</license>
+
+  <author email="frontwise@gmail.com">Roman Fedorenko</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>mav_msgs</build_depend>
+  <build_depend>dji_sdk</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>tf</build_depend>
+  <build_depend>control_toolbox</build_depend>
+  <build_depend>tf2</build_depend>
+  <build_depend>tf2_geometry_msgs</build_depend>
+  <build_depend>dynamic_reconfigure</build_depend>  
+  <run_depend>dynamic_reconfigure</run_depend>
+
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>mav_msgs</run_depend>
+  <run_depend>dji_sdk</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>control_toolbox</run_depend>
+  <run_depend>tf2</run_depend>
+  <run_depend>tf2_geometry_msgs</run_depend>
+  <run_depend>tf</run_depend>
+  <run_depend>dynamic_reconfigure</run_depend>
+  <run_depend>nav_msgs</run_depend>
+
+  <build_depend>mav_trajectory_generation</build_depend>
+  <build_depend>mav_trajectory_generation_ros</build_depend>
+  <build_depend>mav_planning_msgs</build_depend>
+  <build_depend>mav_msgs</build_depend>
+  <build_depend>nav_msgs</build_depend>
+
+</package>

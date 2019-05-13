@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+
+<launch>
+  <param name="use_sim_time" type="bool" value="true" />
+
+  <arg name="mav_name" default="inspire1" />
+  <arg name="namespace" default="$(arg mav_name)"/>
+
+  <node pkg="rosbag" type="play" name="play" output="screen" args="-s 65 -r 0.5 -l --clock /dataset/drone/uni/m600_2000-01-01-00-01-46_0.bag.active">
+    <remap from="velodyne_points" to="loged_velodyne_points"/>
+  </node>
+
+  <!-- <include file="$(find velodyne_pointcloud)/launch/VLP16_points.launch"> -->
+  <include file="$(find dji_command)/launch/VLP16_points.launch">
+    <arg name="min_range" value="1.5" />
+    <arg name="view_width" value="3.14"/>
+  </include>
+
+  <node pkg="geodetic_utils" type="geodetic_to_local_conversion_node" name="geodetic_to_local_conversion_node" output="screen">
+    <remap from="gps" to="/dji_sdk/gps_position"/>
+    <remap from="imu" to="/dji_sdk/imu"/>
+    <remap from="vel" to="/dji_sdk/velocity"/>
+    <!--remap from="external_altitude" to="/dji_sdk/height_above_takeoff"/-->
+    <remap from="odometry" to="/dji_sdk/odometry"/>
+  </node>
+
+  <node pkg="geodetic_utils" type="gimbal_tf_broadcaster_bag.py" name="gimbal_tf_broadcaster" respawn="true">
+  </node>
+
+  <node pkg="pointcloud_mapper" type="project_points_node" name="project_points_node" respawn="true">
+  </node>
+
+  <!-- <node pkg="pointcloud_mapper" type="pointcloud_mapper_node" name="pointcloud_mapper_node" respawn="true">
+    <remap from="/pointcloud_in" to="/velodyne_points"/>
+  </node> -->
+
+  <node pkg="pointcloud_mapper" type="pointcloud_mapper_node" name="pointcloud_mapper_node" respawn="true">
+    <remap from="/pointcloud_in" to="/velodyne_points_camfov_colored"/>
+  </node>
+
+  <!-- <node pkg="pointcloud_mapper" type="pointcloud_mapper_node" name="pointcloud_mapper_node2" respawn="true">
+    <remap from="/pointcloud_in" to="/velodyne_points"/>
+    <remap from="/cloud_map" to="/cloud_map2"/>
+  </node> -->
+
+
+  <node pkg="rviz" type="rviz" name="rviz" output="screen" args="-d $(find dji_command)/rviz/drone_mapping.rviz">
+  </node>
+
+  <!-- Usage: static_transform_publisher x y z yaw pitch roll frame_id child_frame_id  period (milliseconds) -->
+  <node pkg="tf" type="static_transform_publisher" name="pylon_camera" args="0 0 0.05 1.5707963 3.14159 1.5707963 velodyne pylon_camera 100"/>
+  <node pkg="dji_command" type="yaml_to_camera_info_publisher.py" name="yaml_to_camera_info_publisher" args="$(find dji_command)/resources/ost.yaml" respawn="true"/>
+
+  <!-- <group ns="$(arg namespace)"> -->
+  <!--node pkg="dji_command" type="set_trajectory_node" name="DJIAttitudeControllerNode" respawn="true"></node>
+  <node pkg="mav_trajectory_generation_ros" type="trajectory_sampler_node" name="trajectory_sampler_node" respawn="true">
+    <param name="publish_whole_trajectory" type="bool" value="true" />
+  </node-->
+  <!-- </group> -->
+
+   <!-- rosrun tf static_transform_publisher 0 0 0.1 1.57 3.14 1.57 velodyne pylon_camera 100 -->
+
+  <!-- <node pkg="dji_command" type="lidar_tf_allign.py" name="lidar_tf_allign" respawn="true"/> -->
+
+</launch>

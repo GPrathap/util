@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="mav_name" default="firefly" />
+  <arg name="namespace" default="$(arg mav_name)"/>    
+  <group ns="$(arg namespace)">
+    <node name="mav_nonlinear_mpc" pkg="mav_nonlinear_mpc" type="nonlinear_mpc_node" respawn="true" clear_params="true" output="screen">
+      <remap from="/firefly/odometry" to="/dji_sdk/odometry" />
+      <rosparam file="$(find mav_nonlinear_mpc)/resources/nonlinear_mpc_$(arg mav_name).yaml" />
+      <rosparam file="$(find mav_disturbance_observer)/resources/disturbance_observer_$(arg mav_name).yaml"/>
+      <param name="use_rc_teleop" value="false"/>
+      <param name="verbose" value="true" />
+      <param name="reference_frame" value="world"/>
+    </node>
+
+    <node name="mav_trajectory_generation_ros" pkg="mav_trajectory_generation_ros" type="trajectory_sampler_node" respawn="true" clear_params="true" output="screen">
+      <!--remap from="/command/roll_pitch_yawrate_thrust" to="/firefly/command/roll_pitch_yawrate_thrust" /-->
+    </node>
+
+  </group>
+
+    <node name="dji_command" pkg="dji_command" type="dji_command_node" respawn="true" clear_params="true" output="screen">
+      <remap from="/command/roll_pitch_yawrate_thrust" to="/firefly/command/roll_pitch_yawrate_thrust" />
+    </node>
+
+    <node pkg="dji_sdk" type="dji_sdk_node" name="dji_sdk" output="screen">
+		<!-- node parameters -->
+		<param name="serial_name" type="string" value="/dev/ttyUSB0"/>
+		<param name="baud_rate" type="int" value="230400"/>
+		<param name="app_id" type="int" value="1026994"/>
+		<param name="app_version" type="int" value="1"/>
+		<param name="app_bundle_id" type="string" value="Not required in this SDK version"/>
+		<param name="enc_key" type="string" value="b829e781eef08f00ae2b9900f00e7700fc9345aa5e097ca034735090a6d64393"/>
+		<param name="groundstation_enable" type="int" value="1"/>
+    </node>
+
+    <node name="skywand_interactive" pkg="skywand_interactive" type="trajello_marker_server" respawn="true" clear_params="true" output="screen">
+      <remap from="/path_segments" to="/firefly/path_segments" />
+    </node>
+
+</launch>
