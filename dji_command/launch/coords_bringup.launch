@@ -9,23 +9,23 @@
   <node pkg="rosbag" type="play" name="play" output="screen" args="-s 65 -r 0.5 -l --clock /dataset/drone/uni/m600_2000-01-01-00-01-46_0.bag.active">
     <remap from="velodyne_points" to="loged_velodyne_points"/>
   </node>
-
-  <!-- <include file="$(find velodyne_pointcloud)/launch/VLP16_points.launch"> -->
-  <include file="$(find dji_command)/launch/VLP16_points.launch">
-    <arg name="min_range" value="1.5" />
-    <arg name="view_width" value="3.14"/>
-  </include>
-
   <node pkg="geodetic_utils" type="geodetic_to_local_conversion_node" name="geodetic_to_local_conversion_node" output="screen">
     <remap from="gps" to="/dji_sdk/gps_position"/>
     <remap from="imu" to="/dji_sdk/imu"/>
     <remap from="vel" to="/dji_sdk/velocity"/>
-    <!--remap from="external_altitude" to="/dji_sdk/height_above_takeoff"/-->
     <remap from="odometry" to="/dji_sdk/odometry"/>
   </node>
 
   <node pkg="geodetic_utils" type="gimbal_tf_broadcaster_bag.py" name="gimbal_tf_broadcaster" respawn="true">
   </node>
+
+  <!-- <include file="$(find velodyne_pointcloud)/launch/VLP16_points.launch"> -->
+  <include file="$(find dji_command)/launch/VLP16_points.launch">
+    <arg name="min_range" value="0.4" />
+    <arg name="view_width" value="6.26"/>
+  </include>
+
+ 
 
   <node pkg="pointcloud_mapper" type="project_points_node" name="project_points_node" respawn="true">
   </node>

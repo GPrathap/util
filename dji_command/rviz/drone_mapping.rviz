@@ -1,6 +1,6 @@
 Panels:
   - Class: rviz/Displays
-    Help Height: 138
+    Help Height: 0
     Name: Displays
     Property Tree Widget:
       Expanded:
@@ -8,14 +8,9 @@ Panels:
         - /Odometry1/Covariance1/Orientation1
         - /TF1/Frames1
         - /TF1/Tree1
-        - /TrajectoryMarkerArray1
         - /Original PointCloud21/Size (m)1
         - /MarkerArray1/Namespaces1
-        - /Path Found1
         - /Planning Tree1/Namespaces1
-        - /PC assessment1
-        - /reference_trajectory1
-        - /cloud_map1
         - /velodyne_points1
         - /Camera1
         - /Camera1/Visibility1
@@ -23,10 +18,12 @@ Panels:
         - /PointCloud24
         - /PointCloud26
         - /PointCloud27
-        - /detectedoBJECTS1
         - /detectedoBJECTS1/Namespaces1
+        - /MarkerArray2
+        - /detectedObstacles1/Namespaces1
+        - /Path3
       Splitter Ratio: 0.5158501267433167
-    Tree Height: 733
+    Tree Height: 464
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -86,7 +83,7 @@ Visualization Manager:
           Scale: 1
           Value: true
         Value: false
-      Enabled: true
+      Enabled: false
       Keep: 2000
       Name: Odometry
       Position Tolerance: 0.10000000149011612
@@ -102,7 +99,7 @@ Visualization Manager:
         Value: Arrow
       Topic: /dji_sdk/odometry
       Unreliable: false
-      Value: true
+      Value: false
     - Class: rviz/Marker
       Enabled: true
       Marker Topic: /inspire1/predicted_state
@@ -158,7 +155,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: AxisColor
       Decay Time: 0
-      Enabled: false
+      Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Max Intensity: 2.3509885615147286e-38
@@ -175,7 +172,7 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: false
+      Value: true
     - Class: rviz/Image
       Enabled: false
       Image Topic: /pylon_camera_node_aca1300/image_raw
@@ -383,10 +380,10 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: Intensity
       Decay Time: 0
-      Enabled: false
+      Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 79
+      Max Intensity: 137
       Min Color: 0; 0; 0
       Min Intensity: 0
       Name: velodyne_points
@@ -400,7 +397,7 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: false
+      Value: true
     - Class: rviz/Image
       Enabled: false
       Image Topic: /pylon_camera_node_aca1300/image_raw
@@ -444,6 +441,7 @@ Visualization Manager:
         TrajectoryMarkerArray: true
         Value: true
         cloud_map: true
+        detectedObstacles: true
         detectedoBJECTS: true
         points_camfov: true
         points_camfov_colored: true
@@ -558,7 +556,7 @@ Visualization Manager:
           Scale: 1
           Value: true
         Value: true
-      Enabled: true
+      Enabled: false
       Keep: 1000
       Name: Odometry
       Position Tolerance: 0.10000000149011612
@@ -574,7 +572,7 @@ Visualization Manager:
         Value: Arrow
       Topic: /odom
       Unreliable: false
-      Value: true
+      Value: false
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -707,7 +705,7 @@ Visualization Manager:
       Color: 85; 255; 0
       Color Transformer: FlatColor
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Max Intensity: 239
@@ -724,21 +722,21 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: true
+      Value: false
     - Class: rviz/MarkerArray
-      Enabled: true
+      Enabled: false
       Marker Topic: /hagen/detected_objects
       Name: detectedoBJECTS
       Namespaces:
-        obstacles: true
+        {}
       Queue Size: 100
-      Value: true
+      Value: false
     - Class: rviz/MarkerArray
       Enabled: true
       Marker Topic: /hagen/drone_sphere
       Name: MarkerArray
       Namespaces:
-        projected_path: true
+        search_sapce: true
       Queue Size: 100
       Value: true
     - Alpha: 1
@@ -818,7 +816,7 @@ Visualization Manager:
           Scale: 1
           Value: true
         Value: true
-      Enabled: true
+      Enabled: false
       Keep: 100
       Name: Odometry----------
       Position Tolerance: 0.10000000149011612
@@ -833,6 +831,29 @@ Visualization Manager:
         Shaft Radius: 0.05000000074505806
         Value: Arrow
       Topic: /dji_sdk/odometry
+      Unreliable: false
+      Value: false
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 0; 255; 255
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.20000000298023224
+      Length: 0.30000001192092896
+      Line Style: Lines
+      Line Width: 0.029999999329447746
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: None
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
+      Topic: /hagen/proposed_trajectory
       Unreliable: false
       Value: true
     - Alpha: 1
@@ -856,6 +877,37 @@ Visualization Manager:
       Shaft Diameter: 0.10000000149011612
       Shaft Length: 0.10000000149011612
       Topic: /hagen/projected_trajectory
+      Unreliable: false
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /hagen/detected_objects
+      Name: detectedObstacles
+      Namespaces:
+        obstacles: true
+      Queue Size: 100
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 255; 0; 0
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.20000000298023224
+      Length: 0.30000001192092896
+      Line Style: Lines
+      Line Width: 0.029999999329447746
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: None
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
+      Topic: /hagen/smoothed_trajectory
       Unreliable: false
       Value: true
   Enabled: true
@@ -883,7 +935,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 83.64077758789062
+      Distance: 35.07027053833008
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -898,22 +950,22 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: -0.8646034598350525
+      Pitch: 0.29479578137397766
       Target Frame: gps_receiver
       Value: Orbit (rviz)
-      Yaw: 5.107211112976074
+      Yaw: 0.08582552522420883
     Saved: ~
 Window Geometry:
   Camera:
     collapsed: false
   Displays:
     collapsed: false
-  Height: 2112
+  Height: 1056
   Hide Left Dock: false
   Hide Right Dock: false
   Image:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000400000000000002a7000006c7fc020000000dfb0000001200530065006c0065006300740069006f006e00000001e10000009b000000ab00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb0000000a005600690065007700730100000150000002f00000012300fffffffb000000100044006900730070006c006100790073010000044c000003cb0000017800fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000a0049006d0061006700650000000412fffffff00000002100fffffffb0000000a0049006d006100670065000000023b000000cb0000002100fffffffb0000000a0049006d0061006700650000000333000000cf0000000000000000fb0000000a0049006d00610067006501000002bb000001470000000000000000000000010000011700000402fc0200000002fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000e7e00000122fc010000000bfb0000000c00430061006d006500720061010000000000000e7e0000009f00fffffffb0000000c00430061006d0065007200610100000067000006d80000000000000000fb0000000c00430061006d00650072006101000000000000073f0000000000000000fb0000000c00430061006d00650072006101000000000000073f0000000000000000fb0000000c00430061006d0065007200610100000000000003a00000000000000000fb0000000c00430061006d00650072006101000000000000073f0000000000000000fb0000000c00430061006d00650072006101000000000000073f0000000000000000fb0000000c00430061006d00650072006101000000000000073f0000000000000000fb0000000c00430061006d0065007200610100000000000003a00000000000000000fb0000000c00430061006d0065007200610100000000000003a00000000000000000fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000004b00000003bfc0100000002fb0000000800540069006d00650000000000000004b00000045300fffffffb0000000800540069006d0065010000000000000450000000000000000000000bcb000006c700000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730000000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000400000000000001f30000020dfc020000000dfb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005d00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb0000000a005600690065007700730000000298000000a0000000a500fffffffb000000100044006900730070006c00610079007301000001f60000020d000000cb00fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000a0049006d0061006700650000000412fffffff00000001600fffffffb0000000a0049006d006100670065000000023b000000cb0000001600fffffffb0000000a0049006d0061006700650000000333000000cf0000000000000000fb0000000a0049006d00610067006501000002bb000001470000000000000000000000010000011700000402fc0200000002fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000001200530065006c0065006300740069006f006e010000025a000000b20000000000000000000000020000072f000001dafc010000000bfb0000000c00430061006d00650072006101000000000000072f0000006700fffffffb0000000c00430061006d0065007200610100000067000006d80000000000000000fb0000000c00430061006d00650072006101000000000000073f0000000000000000fb0000000c00430061006d00650072006101000000000000073f0000000000000000fb0000000c00430061006d0065007200610100000000000003a00000000000000000fb0000000c00430061006d00650072006101000000000000073f0000000000000000fb0000000c00430061006d00650072006101000000000000073f0000000000000000fb0000000c00430061006d00650072006101000000000000073f0000000000000000fb0000000c00430061006d0065007200610100000000000003a00000000000000000fb0000000c00430061006d0065007200610100000000000003a00000000000000000fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000004b00000003bfc0100000002fb0000000800540069006d00650000000000000004b00000026c00fffffffb0000000800540069006d00650100000000000004500000000000000000000005360000020d00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730000000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -922,6 +974,6 @@ Window Geometry:
     collapsed: false
   Views:
     collapsed: false
-  Width: 3710
-  X: 130
-  Y: 48
+  Width: 1839
+  X: 78
+  Y: -60

@@ -31,6 +31,7 @@ bool g_got_velocity;
 ros::Publisher g_gps_pose_pub;
 ros::Publisher g_gps_transform_pub;
 ros::Publisher g_gps_position_pub;
+ros::Publisher g_gps_ref_position_pub;
 ros::Publisher g_odometry_pub;
 
 bool g_trust_gps;
@@ -42,6 +43,8 @@ double g_covariance_orientation_y;
 double g_covariance_orientation_z;
 std::string g_frame_id;
 std::string g_tf_child_frame_id;
+geometry_msgs::PointStampedPtr gps_ref_position_msg;
+
 
 // origin init params
 double g_lat_ref;
@@ -101,27 +104,35 @@ void gps_callback(const sensor_msgs::NavSatFixConstPtr& msg)
       if (g_mode == MODE_AVERAGE) {
         g_lat_ref /= g_its;
         g_lon_ref /= g_its;
-//        g_alt_ref /= g_its;
-        g_alt_ref = 0;
+        g_alt_ref /= g_its;
+        //g_alt_ref = 0;
       } else {
         g_lat_ref = msg->latitude;
         g_lon_ref = msg->longitude;
-//        g_alt_ref = msg->altitude;
-        g_alt_ref = 0;
+        g_alt_ref = msg->altitude;
+        // g_alt_ref = 0;
       }
 
       ros::NodeHandle nh;
       nh.setParam("/gps_ref_latitude", g_lat_ref);
       nh.setParam("/gps_ref_longitude", g_lon_ref);
-      nh.setParam("/gps_ref_altitude", /*g_alt_ref*/0);
+      nh.setParam("/gps_ref_altitude", g_alt_ref);
       nh.setParam("/gps_ref_is_init", true);
 
-      ROS_INFO("Final reference position: %3.8f, %3.8f, %4.2f", g_lat_ref, g_lon_ref, /*g_alt_ref*/0);
-      g_geodetic_converter.initialiseReference(g_lat_ref, g_lon_ref, /*g_alt_ref*/0);
+      ROS_INFO("Final reference position: %3.8f, %3.8f, %4.2f", g_lat_ref, g_lon_ref, g_alt_ref);
+      g_geodetic_converter.initialiseReference(g_lat_ref, g_lon_ref, g_alt_ref);
+
+      gps_ref_position_msg->header = msg->header;
+      gps_ref_position_msg->header.frame_id = g_frame_id;
+      geometry_msgs::Point ref_point;
+      ref_point.x = g_lat_ref;
+      ref_point.y = g_lon_ref;
+      ref_point.z = g_alt_ref;
+      gps_ref_position_msg->point = ref_point;
 
       return;
     } else {
-      ROS_INFO("    Still waiting for %d measurements", g_its - g_count);
+      ROS_INFO("Still waiting for %d measurements", g_its - g_count);
     }
 
     g_count++;
@@ -216,10 +227,10 @@ void gps_callback(const sensor_msgs::NavSatFixConstPtr& msg)
       g_gps_pose_pub.publish(pose_msg);
     }
     g_gps_position_pub.publish(position_msg);
+    g_gps_ref_position_pub.publish(gps_ref_position_msg);
 
     // Fill up transform message
-    geometry_msgs::TransformStampedPtr transform_msg(
-          new geometry_msgs::TransformStamped);
+    geometry_msgs::TransformStampedPtr transform_msg(new geometry_msgs::TransformStamped);
     transform_msg->header = msg->header;
     transform_msg->header.frame_id = g_frame_id;
     transform_msg->transform.translation.x = pose_msg->pose.pose.position.x;
@@ -271,6 +282,7 @@ int main(int argc, char **argv) {
   g_got_imu = false;
   g_got_altitude = false;
   p_tf_broadcaster = std::make_shared<tf::TransformBroadcaster>();
+  gps_ref_position_msg.reset(new geometry_msgs::PointStamped);
 
   // Specify whether covariances should be set manually or from GPS
   ros::param::param("~trust_gps", g_trust_gps, false);
@@ -303,6 +315,8 @@ int main(int argc, char **argv) {
       nh.advertise<geometry_msgs::TransformStamped>("gps_transform", 1);
   g_gps_position_pub =
       nh.advertise<geometry_msgs::PointStamped>("gps_position", 1);
+  g_gps_ref_position_pub =
+      nh.advertise<geometry_msgs::PointStamped>("/dji_sdk/gps_ref_position", 1);
   g_odometry_pub =
       nh.advertise<nav_msgs::Odometry>("odometry", 1);
 

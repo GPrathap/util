@@ -1,0 +1,9 @@
+  <node pkg="geodetic_utils" type="geodetic_to_local_conversion_node" name="geodetic_to_local_conversion_node" output="screen">
+      <remap from="gps" to="/dji_sdk/gps_position"/>
+      <remap from="imu" to="/dji_sdk/imu"/>
+      <remap from="vel" to="/dji_sdk/velocity"/>
+      <remap from="odometry" to="/dji_sdk/odometry"/>
+    </node>
+
+    <node pkg="geodetic_utils" type="gimbal_tf_broadcaster_bag.py" name="gimbal_tf_broadcaster" respawn="true">
+    </node>
