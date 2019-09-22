@@ -110,7 +110,7 @@ void gps_callback(const sensor_msgs::NavSatFixConstPtr& msg)
         g_lat_ref = msg->latitude;
         g_lon_ref = msg->longitude;
         g_alt_ref = msg->altitude;
-        // g_alt_ref = 0;
+        //g_alt_ref = 0;
       }
 
       ros::NodeHandle nh;
