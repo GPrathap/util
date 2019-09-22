@@ -7,3 +7,6 @@ If you havent installed velodyne driver: http://wiki.ros.org/velodyne
 Launch:
 
 Use roslaunch dji_command coords_bringup.launch
+
+
+Note: this is a contribution of https://github.com/frontw
